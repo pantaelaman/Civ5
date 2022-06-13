@@ -1,0 +1,380 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://assets/IconsLarge/hand_hexagon.png" type="Texture" id=1]
+[ext_resource path="res://Theme.theme" type="Theme" id=2]
+[ext_resource path="res://scripts/buildings.gd" type="Script" id=3]
+[ext_resource path="res://scripts/Overlay.gd" type="Script" id=4]
+[ext_resource path="res://assets/Tiles/Modern/modern_campsite.png" type="Texture" id=5]
+[ext_resource path="res://assets/PrebuiltFonts/MediumFont.tres" type="DynamicFont" id=6]
+[ext_resource path="res://scripts/info.gd" type="Script" id=7]
+[ext_resource path="res://assets/IconsLarge/arrow_right.png" type="Texture" id=8]
+[ext_resource path="res://assets/Icons/tokens_stack.png" type="Texture" id=9]
+[ext_resource path="res://assets/PrebuiltFonts/BigFont.tres" type="DynamicFont" id=10]
+[ext_resource path="res://assets/Icons/hourglass.png" type="Texture" id=11]
+[ext_resource path="res://scripts/building_info.gd" type="Script" id=12]
+[ext_resource path="res://assets/Icons/pawn.png" type="Texture" id=13]
+[ext_resource path="res://assets/Icons/structure_house.png" type="Texture" id=14]
+
+[sub_resource type="StreamTexture" id=3]
+flags = 4
+load_path = "res://.import/modern_campsite.png-27130611e8e0301447b1d762d17e35d8.stex"
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 30.0
+content_margin_right = 30.0
+content_margin_top = 30.0
+content_margin_bottom = 30.0
+bg_color = Color( 0.184314, 0.184314, 0.184314, 1 )
+corner_radius_top_left = 1024
+corner_radius_top_right = 1024
+corner_radius_bottom_right = 1024
+corner_radius_bottom_left = 1024
+
+[sub_resource type="StyleBoxFlat" id=2]
+content_margin_left = 30.0
+content_margin_right = 30.0
+content_margin_top = 30.0
+content_margin_bottom = 30.0
+bg_color = Color( 0.231373, 0.231373, 0.231373, 1 )
+corner_radius_top_left = 1024
+corner_radius_top_right = 1024
+corner_radius_bottom_right = 1024
+corner_radius_bottom_left = 1024
+
+[node name="Overlay" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 2 )
+script = ExtResource( 4 )
+
+[node name="buildings" type="Popup" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -221.5
+margin_top = -175.0
+margin_right = 221.5
+margin_bottom = 175.0
+rect_min_size = Vector2( 0, 350 )
+script = ExtResource( 3 )
+
+[node name="bg" type="Panel" parent="buildings"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="center" type="HBoxContainer" parent="buildings/bg"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
+alignment = 1
+
+[node name="scroller" type="ScrollContainer" parent="buildings/bg/center"]
+margin_left = 25.0
+margin_right = 397.0
+margin_bottom = 330.0
+rect_min_size = Vector2( 372, 0 )
+follow_focus = true
+scroll_horizontal_enabled = false
+
+[node name="grid" type="GridContainer" parent="buildings/bg/center/scroller"]
+margin_right = 360.0
+rect_min_size = Vector2( 360, 0 )
+columns = 3
+
+[node name="right" type="VBoxContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -223.0
+margin_top = 10.0
+margin_right = -5.0
+margin_bottom = -10.0
+alignment = 2
+
+[node name="building_info" type="PanelContainer" parent="right"]
+visible = false
+margin_top = 308.0
+margin_right = 218.0
+margin_bottom = 476.0
+script = ExtResource( 12 )
+
+[node name="vert" type="VBoxContainer" parent="right/building_info"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 213.0
+margin_bottom = 163.0
+
+[node name="head_hori" type="HBoxContainer" parent="right/building_info/vert"]
+margin_right = 208.0
+margin_bottom = 98.0
+
+[node name="tile_cont" type="Control" parent="right/building_info/vert/head_hori"]
+margin_right = 84.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 84, 98 )
+
+[node name="texture" type="TextureRect" parent="right/building_info/vert/head_hori/tile_cont"]
+margin_right = 120.0
+margin_bottom = 140.0
+rect_scale = Vector2( 0.7, 0.7 )
+texture = SubResource( 3 )
+
+[node name="label" type="Label" parent="right/building_info/vert/head_hori"]
+margin_left = 88.0
+margin_top = 36.0
+margin_right = 156.0
+margin_bottom = 62.0
+custom_fonts/font = ExtResource( 6 )
+text = "Campsite"
+
+[node name="price_hori" type="HBoxContainer" parent="right/building_info/vert"]
+margin_top = 102.0
+margin_right = 208.0
+margin_bottom = 128.0
+
+[node name="price" type="Label" parent="right/building_info/vert/price_hori"]
+margin_right = 102.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 6 )
+text = "Price"
+
+[node name="price_value" type="Label" parent="right/building_info/vert/price_hori"]
+margin_left = 106.0
+margin_right = 208.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 6 )
+text = "0"
+align = 2
+
+[node name="benefits_hori" type="HBoxContainer" parent="right/building_info/vert"]
+margin_top = 132.0
+margin_right = 208.0
+margin_bottom = 158.0
+
+[node name="benefits" type="Label" parent="right/building_info/vert/benefits_hori"]
+margin_right = 102.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 6 )
+text = "Benefits"
+
+[node name="benefits_vert" type="VBoxContainer" parent="right/building_info/vert/benefits_hori"]
+margin_left = 106.0
+margin_right = 208.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="info" type="PanelContainer" parent="right"]
+visible = false
+margin_top = 176.0
+margin_right = 218.0
+margin_bottom = 476.0
+rect_min_size = Vector2( 0, 300 )
+mouse_filter = 2
+script = ExtResource( 7 )
+
+[node name="vert" type="VBoxContainer" parent="right/info"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 213.0
+margin_bottom = 295.0
+
+[node name="head_hori" type="HBoxContainer" parent="right/info/vert"]
+anchor_left = 0.00480769
+anchor_right = 0.00480769
+margin_right = 208.0
+margin_bottom = 98.0
+
+[node name="tile_cont" type="Control" parent="right/info/vert/head_hori"]
+margin_right = 84.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 84, 98 )
+
+[node name="texture" type="TextureRect" parent="right/info/vert/head_hori/tile_cont"]
+margin_right = 120.0
+margin_bottom = 140.0
+rect_scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 5 )
+
+[node name="label" type="Label" parent="right/info/vert/head_hori"]
+margin_left = 88.0
+margin_top = 36.0
+margin_right = 156.0
+margin_bottom = 62.0
+custom_fonts/font = ExtResource( 6 )
+text = "Campsite"
+
+[node name="beauty_hori" type="HBoxContainer" parent="right/info/vert"]
+margin_top = 102.0
+margin_right = 208.0
+margin_bottom = 128.0
+
+[node name="beauty" type="Label" parent="right/info/vert/beauty_hori"]
+margin_right = 102.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 6 )
+text = "Beauty"
+
+[node name="beauty_value" type="Label" parent="right/info/vert/beauty_hori"]
+margin_left = 106.0
+margin_right = 208.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 6 )
+text = "0"
+align = 2
+
+[node name="economy_hori" type="HBoxContainer" parent="right/info/vert"]
+margin_top = 132.0
+margin_right = 208.0
+margin_bottom = 158.0
+
+[node name="economy" type="Label" parent="right/info/vert/economy_hori"]
+margin_right = 102.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 6 )
+text = "Economy"
+
+[node name="economy_value" type="Label" parent="right/info/vert/economy_hori"]
+margin_left = 106.0
+margin_right = 208.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 6 )
+text = "0"
+align = 2
+
+[node name="buttons_hori" type="HBoxContainer" parent="right"]
+margin_top = 480.0
+margin_right = 218.0
+margin_bottom = 580.0
+alignment = 1
+
+[node name="build" type="Button" parent="right/buttons_hori"]
+margin_left = 7.0
+margin_right = 107.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/normal = SubResource( 1 )
+icon = ExtResource( 1 )
+expand_icon = true
+
+[node name="next_turn" type="Button" parent="right/buttons_hori"]
+margin_left = 111.0
+margin_right = 211.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/normal = SubResource( 1 )
+icon = ExtResource( 8 )
+expand_icon = true
+
+[node name="top_left" type="PanelContainer" parent="."]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 40.0
+margin_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="hori" type="HBoxContainer" parent="top_left"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 373.0
+margin_bottom = 69.0
+
+[node name="money_hori" type="HBoxContainer" parent="top_left/hori"]
+margin_right = 89.0
+margin_bottom = 64.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="icon" type="TextureRect" parent="top_left/hori/money_hori"]
+margin_right = 64.0
+margin_bottom = 64.0
+texture = ExtResource( 9 )
+
+[node name="money" type="Label" parent="top_left/hori/money_hori"]
+margin_left = 68.0
+margin_top = 7.0
+margin_right = 89.0
+margin_bottom = 56.0
+custom_fonts/font = ExtResource( 10 )
+text = "0"
+
+[node name="turn_hori" type="HBoxContainer" parent="top_left/hori"]
+margin_left = 93.0
+margin_right = 182.0
+margin_bottom = 64.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="icon" type="TextureRect" parent="top_left/hori/turn_hori"]
+margin_right = 64.0
+margin_bottom = 64.0
+texture = ExtResource( 11 )
+
+[node name="turn" type="Label" parent="top_left/hori/turn_hori"]
+margin_left = 68.0
+margin_top = 7.0
+margin_right = 89.0
+margin_bottom = 56.0
+custom_fonts/font = ExtResource( 10 )
+text = "0"
+
+[node name="population_hori" type="HBoxContainer" parent="top_left/hori"]
+margin_left = 186.0
+margin_right = 275.0
+margin_bottom = 64.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="icon" type="TextureRect" parent="top_left/hori/population_hori"]
+margin_right = 64.0
+margin_bottom = 64.0
+texture = ExtResource( 13 )
+
+[node name="population" type="Label" parent="top_left/hori/population_hori"]
+margin_left = 68.0
+margin_top = 7.0
+margin_right = 89.0
+margin_bottom = 56.0
+custom_fonts/font = ExtResource( 10 )
+text = "0"
+
+[node name="housing_hori" type="HBoxContainer" parent="top_left/hori"]
+margin_left = 279.0
+margin_right = 368.0
+margin_bottom = 64.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="icon" type="TextureRect" parent="top_left/hori/housing_hori"]
+margin_right = 64.0
+margin_bottom = 64.0
+texture = ExtResource( 14 )
+
+[node name="housing" type="Label" parent="top_left/hori/housing_hori"]
+margin_left = 68.0
+margin_top = 7.0
+margin_right = 89.0
+margin_bottom = 56.0
+custom_fonts/font = ExtResource( 10 )
+text = "0"
+
+[connection signal="building_selected" from="buildings" to="." method="_on_buildings_building_selected"]
+[connection signal="pressed" from="right/buttons_hori/build" to="." method="_on_build_pressed"]
+[connection signal="pressed" from="right/buttons_hori/next_turn" to="." method="_on_next_turn_pressed"]

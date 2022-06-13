@@ -1,0 +1,124 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://assets/Tiles/Tiles.tres" type="TileSet" id=1]
+[ext_resource path="res://scripts/Main.gd" type="Script" id=19]
+[ext_resource path="res://scripts/map.gd" type="Script" id=20]
+[ext_resource path="res://scenes/Overlay.tscn" type="PackedScene" id=21]
+
+[sub_resource type="Shader" id=2]
+code = "shader_type canvas_item;
+
+uniform bool impossible = false;
+uniform bool upgrade = false;
+
+void fragment() {
+	vec4 s = texture(SCREEN_TEXTURE, SCREEN_UV);
+	vec4 t = texture(TEXTURE, UV);
+	
+	float a = t[3] * abs(sin(TIME * 2.5)) * .8;
+	
+	COLOR = mix(s,t,a);
+	if (upgrade) {
+		COLOR = mix(COLOR, vec4(0.0, 1.0, 0.0, a), 0.5*t[3]);
+	} else if (impossible) {
+		COLOR = mix(COLOR, vec4(1.0, 0.0, 0.0, a), 0.5*t[3]);
+	}
+}
+"
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+shader_param/impossible = false
+shader_param/upgrade = false
+
+[sub_resource type="Shader" id=6]
+code = "shader_type canvas_item;
+
+void fragment() {
+	vec4 s = texture(SCREEN_TEXTURE, SCREEN_UV);
+	vec4 ft = texture(TEXTURE, UV);
+	vec4 t = vec4(1.0, 1.0, 1.0, ft[3]);
+	
+	float a = t[3] * abs(sin(TIME * 2.5)) * .8;
+	
+	COLOR = mix(s,t,t[3]*.3);
+}
+"
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = SubResource( 6 )
+
+[sub_resource type="Shader" id=4]
+code = "shader_type canvas_item;
+
+void fragment() {
+	vec4 s = texture(SCREEN_TEXTURE, SCREEN_UV);
+	vec4 ft = texture(TEXTURE, UV);
+	vec4 t = vec4(1.0, 0.6, 0.0, ft[3]);
+	
+	float a = t[3] * abs(sin(TIME * 2.5)) * .8;
+	
+	COLOR = mix(s,t,t[3]*.38);
+}
+"
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = SubResource( 4 )
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 19 )
+
+[node name="map" type="TileMap" parent="."]
+mode = 2
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 120, 140 )
+cell_custom_transform = Transform2D( 120, 0, 0, 104, 0, 0 )
+cell_half_offset = 0
+format = 1
+tile_data = PoolIntArray( -524281, 5, 0, -458747, 5, 0, -393211, 5, 0, 1, 19, 0, 2, 19, 0, 65536, 19, 0, 65537, 1, 0, 65538, 19, 0, 131073, 19, 0, 131074, 19, 0 )
+script = ExtResource( 20 )
+
+[node name="buildmap" type="TileMap" parent="."]
+material = SubResource( 3 )
+mode = 2
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 120, 104 )
+cell_custom_transform = Transform2D( 120, 0, 0, 104, 0, 0 )
+cell_half_offset = 0
+format = 1
+script = ExtResource( 20 )
+
+[node name="selectmap" type="TileMap" parent="."]
+material = SubResource( 7 )
+mode = 2
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 120, 104 )
+cell_custom_transform = Transform2D( 120, 0, 0, 104, 0, 0 )
+cell_half_offset = 0
+format = 1
+script = ExtResource( 20 )
+
+[node name="highlightmap" type="TileMap" parent="."]
+visible = false
+material = SubResource( 5 )
+mode = 2
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 120, 104 )
+cell_custom_transform = Transform2D( 120, 0, 0, 104, 0, 0 )
+cell_half_offset = 0
+format = 1
+script = ExtResource( 20 )
+
+[node name="camera" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+zoom = Vector2( 2, 2 )
+limit_left = 120
+limit_top = 100
+
+[node name="hud" type="CanvasLayer" parent="."]
+
+[node name="Overlay" parent="hud" instance=ExtResource( 21 )]
+
+[connection signal="building_selected" from="hud/Overlay" to="." method="_on_Overlay_building_selected"]
+[connection signal="next_turn" from="hud/Overlay" to="." method="_on_Overlay_next_turn"]
