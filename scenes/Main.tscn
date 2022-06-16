@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://assets/Tiles/Tiles.tres" type="TileSet" id=1]
 [ext_resource path="res://scripts/Main.gd" type="Script" id=19]
@@ -31,40 +31,6 @@ shader = SubResource( 2 )
 shader_param/impossible = false
 shader_param/upgrade = false
 
-[sub_resource type="Shader" id=6]
-code = "shader_type canvas_item;
-
-void fragment() {
-	vec4 s = texture(SCREEN_TEXTURE, SCREEN_UV);
-	vec4 ft = texture(TEXTURE, UV);
-	vec4 t = vec4(1.0, 1.0, 1.0, ft[3]);
-	
-	float a = t[3] * abs(sin(TIME * 2.5)) * .8;
-	
-	COLOR = mix(s,t,t[3]*.3);
-}
-"
-
-[sub_resource type="ShaderMaterial" id=7]
-shader = SubResource( 6 )
-
-[sub_resource type="Shader" id=4]
-code = "shader_type canvas_item;
-
-void fragment() {
-	vec4 s = texture(SCREEN_TEXTURE, SCREEN_UV);
-	vec4 ft = texture(TEXTURE, UV);
-	vec4 t = vec4(1.0, 0.6, 0.0, ft[3]);
-	
-	float a = t[3] * abs(sin(TIME * 2.5)) * .8;
-	
-	COLOR = mix(s,t,t[3]*.38);
-}
-"
-
-[sub_resource type="ShaderMaterial" id=5]
-shader = SubResource( 4 )
-
 [node name="Main" type="Node2D"]
 script = ExtResource( 19 )
 
@@ -89,7 +55,7 @@ format = 1
 script = ExtResource( 20 )
 
 [node name="selectmap" type="TileMap" parent="."]
-material = SubResource( 7 )
+modulate = Color( 1, 1, 1, 0.784314 )
 mode = 2
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 120, 104 )
@@ -99,8 +65,7 @@ format = 1
 script = ExtResource( 20 )
 
 [node name="highlightmap" type="TileMap" parent="."]
-visible = false
-material = SubResource( 5 )
+modulate = Color( 1, 1, 1, 0.784314 )
 mode = 2
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 120, 104 )

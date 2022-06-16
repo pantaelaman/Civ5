@@ -35,7 +35,7 @@ func _ready():
 		resource.texture = Tiles.BENEFITS_TEXTURES["hex"];
 		root.add_child(label);
 		root.add_child(scale_texrect(resource));
-	else:
+	elif benefit.type == "tile":
 		var label = Label.new();
 		label.add_font_override("font", FONT);
 		label.text = String(benefit.count);
@@ -48,6 +48,19 @@ func _ready():
 		root.add_child(scale_texrect(icon));
 		root.add_child(label);
 		root.add_child(scale_texrect(resource));
+	else:
+		for cosmetic in benefit.cosmetic:
+			if cosmetic.type == "icon":
+				var icon = TextureRect.new();
+				icon.texture = Tiles.BENEFITS_TEXTURES[cosmetic.icon];
+				root.add_child(scale_texrect(icon));
+			elif cosmetic.type == "count":
+				var label = Label.new();
+				label.add_font_override("font", FONT);
+				label.text = String(cosmetic.count);
+				label.align = Label.ALIGN_CENTER;
+				label.valign = Label.VALIGN_CENTER;
+				root.add_child(label);
 	
 
 func scale_texrect(texrect: TextureRect) -> Control:

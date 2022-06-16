@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Theme.theme" type="Theme" id=1]
+[ext_resource path="res://assets/PrebuiltFonts/TitleFont.tres" type="DynamicFont" id=2]
+[ext_resource path="res://assets/PrebuiltFonts/BigFont.tres" type="DynamicFont" id=3]
+[ext_resource path="res://scripts/Winning.gd" type="Script" id=4]
+
+[node name="Winning" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 4 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.231373, 0.231373, 0.231373, 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+margin_right = 410.0
+margin_bottom = 78.0
+custom_fonts/font = ExtResource( 2 )
+text = "You Succeeded!"
+align = 1
+
+[node name="turns" type="Label" parent="VBoxContainer"]
+margin_top = 82.0
+margin_right = 410.0
+margin_bottom = 131.0
+custom_fonts/font = ExtResource( 3 )
+text = "You won the game in 0 turns."
+align = 1
+
+[node name="Label3" type="Label" parent="VBoxContainer"]
+margin_top = 135.0
+margin_right = 410.0
+margin_bottom = 184.0
+custom_fonts/font = ExtResource( 3 )
+text = "Try for fewer!"
+align = 1
+
+[node name="Retry" type="Button" parent="VBoxContainer"]
+margin_top = 188.0
+margin_right = 410.0
+margin_bottom = 243.0
+custom_fonts/font = ExtResource( 3 )
+text = "Retry"
+
+[connection signal="pressed" from="VBoxContainer/Retry" to="." method="_on_Retry_pressed"]

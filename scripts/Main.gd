@@ -23,6 +23,7 @@ var cur_building_valids = [];
 var cur_building_upgrades = [];
 var cur_valid = true;
 var cur_upgrade = false;
+var cur_upgrade_cost = 999;
 
 onready var prev_build_cell = buildmap.world_to_map(get_global_mouse_position());
 onready var prev_select_cell = buildmap.world_to_map(get_global_mouse_position());
@@ -50,6 +51,10 @@ func _process(_delta):
 func clamp_camera():
 	camera.position.x = clamp(camera.position.x, 120, CAMERA_MAX.x);
 	camera.position.y = clamp(camera.position.y, 104, CAMERA_MAX.y);
+	if mode == Mode.BUILDING:
+		update_building(buildmap.world_to_map(get_global_mouse_position()));
+	else:
+		update_selected(selectmap.world_to_map(get_global_mouse_position()));
 	
 
 func _input(event):
@@ -61,8 +66,12 @@ func _input(event):
 		if mode == Mode.NORMAL:
 			var current_select_cell = selectmap.world_to_map(get_global_mouse_position());
 			if current_select_cell != prev_select_cell:
-				selectmap.clear();
-				selectmap.set_cellv(current_select_cell, 0);
+				update_selected(current_select_cell);
+	
+
+func update_selected(cell: Vector2):
+	selectmap.clear();
+	selectmap.set_celln(cell, "selected");
 	
 
 func update_building(cell: Vector2):
@@ -72,10 +81,15 @@ func update_building(cell: Vector2):
 	var expensive = Tiles.TILES[building_id].get("base_price", 999) > Tiles.CIV_DATA.money;
 	var valid_cell = Tiles.which_matches(highlighted_cell_id, cur_building_valids) != -1;
 	var buildable_cell = !cur_building_data.get("requires_towncentre", true) || Tiles.CIV_DATA.buildable.has(cell);
+	if !buildable_cell:
+		overlay.show_bottom_warning();
+	else:
+		overlay.hide_bottom_warning();
 	cur_valid = valid_cell && !expensive && buildable_cell;
 	var upgrade_cell = Tiles.which_matches(highlighted_cell_id, cur_building_upgrades);
 	if upgrade_cell != -1:
-		cur_upgrade = Tiles.TILES[building_id].get("valid_upgrade", {}).get(cur_building_upgrades[upgrade_cell], 999) <= Tiles.CIV_DATA.money;
+		cur_upgrade_cost = Tiles.TILES[building_id].get("valid_upgrade", {}).get(cur_building_upgrades[upgrade_cell], 999)
+		cur_upgrade = cur_upgrade_cost <= Tiles.CIV_DATA.money;
 	else:
 		cur_upgrade = false;
 	buildmap.material.set_shader_param("upgrade", cur_upgrade);
@@ -92,11 +106,12 @@ func _unhandled_input(event):
 				var cell = map.world_to_map(get_global_mouse_position());
 				overlay.show_info_for_tile(cell.x, cell.y);
 				highlightmap.clear();
-				highlightmap.set_cellv(cell, 0);
+				highlightmap.set_celln(cell, "highlighted");
 	elif event is InputEventKey:
 		if mode == Mode.BUILDING && event.scancode == KEY_ESCAPE:
 			buildmap.clear();
 			overlay.hide_building_info();
+			overlay.hide_bottom_warning();
 			mode = Mode.NORMAL;
 		elif mode == Mode.NORMAL && event.scancode == KEY_ESCAPE:
 			highlightmap.clear();
@@ -104,27 +119,30 @@ func _unhandled_input(event):
 	
 
 func place_tile(position: Vector2):
-	Tiles.CIV_DATA.money -= Tiles.TILES[building_id].get("base_price", 999);
+	if cur_upgrade:
+		Tiles.CIV_DATA.money -= cur_upgrade_cost
+	else:
+		Tiles.CIV_DATA.money -= Tiles.TILES[building_id].get("base_price", 999);
 	map.set_celln(position, building_id);
 	Tiles.place_tile(position.x, position.y, building_id);
+	update_building(buildmap.world_to_map(get_global_mouse_position()));
 	overlay.update_ui();
 	
 
 func _on_Overlay_building_selected(id):
 	mode = Mode.BUILDING;
+	highlightmap.clear();
 	overlay.show_building_info_for_tid(id);
 	selectmap.clear();
 	cur_building_data = Tiles.TILES.get(id, {});
 	cur_building_valids = cur_building_data.get("valid_new", []);
 	cur_building_upgrades = cur_building_data.get("valid_upgrade", {}).keys();
 	building_id = id;
+	update_building(buildmap.world_to_map(get_global_mouse_position()));
 	
 
 func turn_end():
-	Tiles.CIV_DATA.turn += 1;
-	Tiles.calculate_happiness();
-	Tiles.calculate_economy();
-	Tiles.calculate_victory();
+	Tiles.end_turn();
 	overlay.update_ui();
 	
 

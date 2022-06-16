@@ -1,0 +1,98 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Theme.theme" type="Theme" id=1]
+[ext_resource path="res://assets/PrebuiltFonts/TitleFont.tres" type="DynamicFont" id=2]
+[ext_resource path="res://assets/PrebuiltFonts/BigFont.tres" type="DynamicFont" id=3]
+[ext_resource path="res://scripts/Welcome.gd" type="Script" id=4]
+[ext_resource path="res://assets/Icons/book_closed.png" type="Texture" id=5]
+[ext_resource path="res://assets/PrebuiltFonts/MediumFont.tres" type="DynamicFont" id=6]
+[ext_resource path="res://assets/Tiles/Tiles.tres" type="TileSet" id=7]
+
+[node name="Welcome" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 4 )
+
+[node name="viewport" type="ViewportContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="map" type="TileMap" parent="viewport"]
+mode = 2
+tile_set = ExtResource( 7 )
+cell_custom_transform = Transform2D( 120, 0, 0, 104, 0, 0 )
+cell_half_offset = 0
+format = 1
+tile_data = PoolIntArray( -1, 1, 0, -65536, 1, 0, -65535, 1, 0, -65534, 1, 0, -65533, 1, 0, -65532, 1, 0, -65531, 1, 0, -65530, 1, 0, -65529, 1, 0, 65535, 1, 0, 0, 23, 0, 1, 23, 0, 2, 23, 0, 3, 23, 0, 4, 1, 0, 5, 52, 0, 6, 16, 0, 7, 25, 0, 8, 1, 0, 131070, 1, 0, 131071, 23, 0, 65536, 24, 0, 65537, 24, 0, 65538, 23, 0, 65539, 23, 0, 65540, 1, 0, 65541, 52, 0, 65542, 16, 0, 65543, 16, 0, 65544, 1, 0, 196607, 23, 0, 131072, 24, 0, 131073, 24, 0, 131074, 23, 0, 131075, 1, 0, 131076, 10, 0, 131077, 1, 0, 131078, 14, 0, 131079, 21, 0, 131080, 21, 0, 262142, 1, 0, 262143, 23, 0, 196608, 23, 0, 196609, 55, 0, 196610, 16, 0, 196611, 9, 0, 196612, 9, 0, 196613, 21, 0, 196614, 21, 0, 196615, 22, 0, 196616, 21, 0, 327679, 1, 0, 262144, 1, 0, 262145, 16, 0, 262146, 25, 0, 262147, 1, 0, 262148, 1, 0, 262149, 21, 0, 262150, 22, 0, 262151, 43, 0, 262152, 21, 0, 393215, 1, 0, 327680, 1, 0, 327681, 1, 0, 327682, 1, 0, 327683, 1, 0, 327684, 1, 0, 327685, 21, 0, 327686, 21, 0, 327687, 22, 0, 327688, 21, 0 )
+
+[node name="vert" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -125.0
+margin_top = 100.0
+margin_right = 125.0
+margin_bottom = -100.0
+grow_horizontal = 2
+
+[node name="title" type="Label" parent="vert"]
+margin_left = 50.0
+margin_right = 300.0
+margin_bottom = 78.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+custom_fonts/font = ExtResource( 2 )
+text = "Civ V (Bad)"
+align = 1
+
+[node name="begin" type="Button" parent="vert"]
+margin_top = 195.0
+margin_right = 350.0
+margin_bottom = 250.0
+rect_min_size = Vector2( 350, 0 )
+size_flags_vertical = 6
+custom_fonts/font = ExtResource( 3 )
+text = "Begin"
+
+[node name="help" type="HBoxContainer" parent="vert"]
+margin_top = 368.0
+margin_right = 350.0
+margin_bottom = 400.0
+alignment = 1
+
+[node name="text1" type="Label" parent="vert/help"]
+margin_left = 69.0
+margin_top = 3.0
+margin_right = 146.0
+margin_bottom = 29.0
+size_flags_vertical = 6
+custom_fonts/font = ExtResource( 6 )
+text = "Look for a "
+
+[node name="scaler" type="Control" parent="vert/help"]
+margin_left = 150.0
+margin_right = 182.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="texture" type="TextureRect" parent="vert/help/scaler"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 32.0
+margin_bottom = 32.0
+rect_scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 5 )
+expand = true
+
+[node name="text2" type="Label" parent="vert/help"]
+margin_left = 186.0
+margin_top = 3.0
+margin_right = 280.0
+margin_bottom = 29.0
+size_flags_vertical = 6
+custom_fonts/font = ExtResource( 6 )
+text = "icon for help!"
+
+[connection signal="pressed" from="vert/begin" to="." method="_on_begin_pressed"]

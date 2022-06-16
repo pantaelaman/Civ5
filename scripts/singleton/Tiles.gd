@@ -1,14 +1,28 @@
 extends Node;
 
+func factory_economy(_x: float, _y: float):
+	return CIV_DATA.advancement;
+	
+
+func hightech_factory_economy(_x: float, _y: float):
+	return CIV_DATA.advancement * 2;
+	
+
+func offices_economy(_x: float, _y: float):
+	return ceil((CIV_DATA.advancement * 3) / (((CIV_DATA.population - CIV_DATA.employed) / CIV_DATA.population) + 1));
+	
+
 const BENEFITS_TEXTURES = {
 	"rock": preload("res://assets/Icons/resource_iron.png"),
 	"forest": preload("res://assets/Icons/resource_lumber.png"),
 	"food": preload("res://assets/Icons/resource_wheat.png"),
+	"factory": preload("res://assets/Icons/resource_wood.png"),
 	"housing": preload("res://assets/Icons/structure_house.png"),
 	"economy": preload("res://assets/Icons/pouch_add.png"),
 	"advancement": preload("res://assets/Icons/award.png"),
 	"victory": preload("res://assets/Icons/exploding.png"),
 	"hex": preload("res://assets/Icons/hexagon_tile.png"),
+	"employment": preload("res://assets/Icons/flip_head.png"),
 };
 
 const TILES = {
@@ -37,18 +51,96 @@ const TILES = {
 			},
 		],
 	},
-	"campsite": {
+	"towncentre_lvl2": {
 		"type": "building",
-		"beauty": 1,
-		"title": "Campsite",
-		"base_price": 5,
+		"beauty": 3,
+		"title": "Town Centre 2",
+		"base_price": 4000,
 		"valid_new": ["#earth&!#rocky"],
-		"valid_upgrade": {},
+		"valid_upgrade": {
+			"towncentre_lvl1": 2000,
+		},
 		"benefits": [
 			{
 				"type": "natural",
+				"resource": "victory",
+				"count": 1,
+			},
+			{
+				"type": "natural",
 				"resource": "housing",
-				"count": 2,
+				"count": 10,
+			},
+			{
+				"type": "natural",
+				"resource": "economy",
+				"count": 10,
+			},
+			{
+				"type": "towncentre",
+				"count": 8,
+			}
+		],
+	},
+	"towncentre_lvl3": {
+		"type": "building",
+		"title": "Town Centre 3",
+		"base_price": 10000,
+		"valid_new": ["#earth&!#rocky"],
+		"valid_upgrade": {
+			"towncentre_lvl2": 8000,
+		},
+		"beauty": 4,
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "victory",
+				"count": 10,
+			},
+			{
+				"type": "natural",
+				"resource": "housing",
+				"count": 20,
+			},
+			{
+				"type": "natural",
+				"resource": "economy",
+				"count": 100,
+			},
+			{
+				"type": "towncentre",
+				"count": 11,
+			},
+		],
+	},
+	"towncentre_lvl4": {
+		"type": "building",
+		"title": "Advanced Town Centre",
+		"base_price": 100000,
+		"beauty": 7,
+		"valid_new": ["#earth&!#rocky"],
+		"valid_upgrade": {
+			"towncentre_lvl3": 90000,
+		},
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "victory",
+				"count": 50,
+			},
+			{
+				"type": "natural",
+				"resource": "housing",
+				"count": 100,
+			},
+			{
+				"type": "natural",
+				"resource": "economy",
+				"count": 1000
+			},
+			{
+				"type": "towncentre",
+				"count": 15,
 			},
 		],
 	},
@@ -56,7 +148,8 @@ const TILES = {
 		"type": "building",
 		"title": "Lumbermill",
 		"base_price": 10,
-		"valid_new": ["#earth", "#paved"],
+		"valid_new": ["#earth&!#rocky"],
+		"employees": 2,
 		"benefits": [
 			{
 				"type": "tile",
@@ -68,14 +161,158 @@ const TILES = {
 			},
 		],
 	},
+	"mine": {
+		"type": "building",
+		"title": "Mine",
+		"base_price": 10,
+		"valid_new": ["#earth&#rocky"],
+		"employees": 2,
+		"benefits": [
+			{
+				"type": "tile",
+				"id": "#rocky",
+				"heavy_boost": 3,
+				"count": 3,
+				"resource": "economy",
+				"icon": "rock",
+			},
+		],
+	},
+	"factory": {
+		"type": "building",
+		"title": "Factory",
+		"base_price": 100,
+		"valid_new": ["#earth"],
+		"employees": 10,
+		"benefits": [
+			{
+				"type": "natural",
+				"count": 2,
+				"resource": "advancement",
+			},
+			{
+				"type": "natural",
+				"count": 2,
+				"resource": "economy",
+			},
+			{
+				"type": "custom",
+				"function": "factory_economy",
+				"resource": "economy",
+				"cosmetic": [
+					{
+						"type": "icon",
+						"icon": "advancement",
+					},
+					{
+						"type": "count",
+						"count": 1,
+					},
+					{
+						"type": "icon",
+						"icon": "economy",
+					},
+				],
+			},
+		],
+	},
+	"hightech_factory": {
+		"type": "building",
+		"title": "Hi-Tech Factory",
+		"base_price": 30000,
+		"valid_new": ["#earth&!#rocky"],
+		"valid_upgrade": {
+			"factory": 2800,
+		},
+		"employees": 30,
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "advancement",
+				"count": 5,
+			},
+			{
+				"type": "natural",
+				"resource": "victory",
+				"count": 2,
+			},
+			{
+				"type": "custom",
+				"function": "hightech_factory_economy",
+				"resource": "economy",
+				"cosmetic": [
+					{
+						"type": "icon",
+						"icon": "advancement",
+					},
+					{
+						"type": "count",
+						"count": 2,
+					},
+					{
+						"type": "icon",
+						"icon": "economy",
+					},
+				],
+			},
+		],
+	},
+	"offices": {
+		"type": "building",
+		"title": "Offices",
+		"base_price": 20000,
+		"valid_new": ["#earth&!#rocky"],
+		"beauty": 2,
+		"employees": 100,
+		"benefits": [
+			{
+				"type": "custom",
+				"resource": "economy",
+				"function": "offices_economy",
+				"cosmetic": [
+					{
+						"type": "icon",
+						"icon": "employment",
+					},
+					{
+						"type": "icon",
+						"icon": "advancement"
+					},
+					{
+						"type": "count",
+						"count": 3,
+					},
+					{
+						"type": "icon",
+						"icon": "economy",
+					},
+				],
+			},
+		],
+	},
+	"campsite": {
+		"type": "building",
+		"beauty": 1,
+		"title": "Campsite",
+		"base_price": 50,
+		"valid_new": ["#earth&!#rocky"],
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "housing",
+				"count": 2,
+			},
+		],
+	},
 	"small_house": {
 		"type": "building",
 		"title": "Small House",
-		"base_price": 20,
+		"beauty": 2,
+		"base_price": 200,
 		"valid_new": ["#earth&!#rocky"],
 		"valid_upgrade": {
-			"campsite": 16,
-			"#paved": 18,
+			"campsite": 160,
+			"#paved": 180,
 		},
 		"benefits": [
 			{
@@ -88,29 +325,134 @@ const TILES = {
 	"house": {
 		"type": "building",
 		"title": "House",
-		"base_price": 45,
+		"beauty": 3,
+		"base_price": 450,
 		"valid_new": ["#earth", "#paved"],
 		"valid_upgrade": {
-			"campsite": 40,
-			"small_house": 30,
-			"#paved": 42,
+			"campsite": 400,
+			"small_house": 300,
+			"#paved": 420,
 		},
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "housing",
+				"count": 6,
+			},
+		],
+	},
+	"villa": {
+		"type": "building",
+		"title": "Villa",
+		"beauty": 9,
+		"base_price": 1400,
+		"valid_new": ["#earth", "#paved"],
+		"valid_upgrade": {
+			"campsite": 1350,
+			"small_house": 1250,
+			"house": 1000,
+			"#paved": 1370,
+		},
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "housing",
+				"count": 10,
+			},
+			{
+				"type": "natural",
+				"resource": "victory",
+				"count": 1,
+			},
+		],
+	},
+	"skyscraper": {
+		"type": "building",
+		"beauty": 5,
+		"title": "Skyscraper",
+		"base_price": 20000,
+		"valid_new": ["#earth", "#paved"],
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "housing",
+				"count": 50,
+			},
+		],
+	},
+	"glass_skyscraper": {
+		"type": "building",
+		"beauty": 5,
+		"title": "Glass Skyscraper",  
+		"base_price": 80000,
+		"valid_new": ["#earth", "#paved"],
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "housing",
+				"count": 100,
+			},
+			{
+				"type": "natural",
+				"resource": "victory",
+				"count": 10,
+			},
+		],
 	},
 	"small_shop": {
 		"type": "building",
 		"title": "Small Shop",
+		"base_price": 700,
+		"valid_new": ["#earth&!#rocky"],
+		"employees": 5,
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "economy",
+				"count": 30,
+			},
+		],
 	},
-	"large_building": {
+	"shop": {
 		"type": "building",
-		"title": "Large Building",
+		"title": "Shop",
+		"base_price": 1500,
+		"valid_new": ["#earth&!#rocky"],
+		"valid_upgrade": {
+			"small_shop": 800,
+		},
+		"employees": 30,
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "economy",
+				"count": 100,
+			},
+		],
 	},
-	"old_building": {
+	"fountain": {
 		"type": "building",
-		"title": "Old Building",
+		"title": "Fountain",
+		"base_price": 1000,
+		"valid_new": ["#earth&!#rocky"],
+		"beauty": 5,
 	},
-	"petrol": {
+	"plaza": {
 		"type": "building",
-		"title": "Gas Station",
+		"title": "Plaza",
+		"base_price": 5000,
+		"valid_new": ["#earth&!#rocky"],
+		"valid_upgrade": {
+			"fountain": 4000,
+		},
+		"beauty": 8,
+		"benefits": [
+			{
+				"type": "natural",
+				"resource": "victory",
+				"count": 1,
+			},
+		],
 	},
 	"grass": {
 		"type": "terrain",
@@ -296,12 +638,13 @@ var TERRAIN = [];
 var TAGS = {};
 
 var CIV_DATA = {
-	"money": 20,
+	"money": 40,
 	"turn": 1,
 	"population": 2,
 	"housing": 0,
 	"beauty": 0,
-	"improvement": 0,
+	"employed": 0,
+	"advancement": 0,
 	"economy": 0,
 	"happiness": 100,
 	"victory": 0,
@@ -312,6 +655,8 @@ var CIV_DATA = {
 var MAP_DATA = [];
 var ECONOMIES = {};
 var VICTORIES = {};
+var RESOURCES_UPDATES = {};
+var HIRING = [];
 
 onready var tset = preload("res://assets/Tiles/Tiles.tres");
 
@@ -456,7 +801,7 @@ func calculate_happiness():
 	for tile in CIV_DATA.buildable:
 		total_beauty += MAP_DATA[tile.x][tile.y].get("beauty", 0);
 	CIV_DATA.beauty = pow(total_beauty, (5 * len(CIV_DATA.buildable)) / total_beauty);
-	var happiness_partial = ((CIV_DATA.beauty * CIV_DATA.improvement * CIV_DATA.economy) - CIV_DATA.population + CIV_DATA.housing) / 10;
+	var happiness_partial = ((CIV_DATA.beauty * (CIV_DATA.advancement / 100) * CIV_DATA.economy) - CIV_DATA.population + CIV_DATA.housing) / 10;
 	CIV_DATA.happiness = 1000 / (1 + exp(-happiness_partial));
 	print("Happiness: " + String(CIV_DATA.happiness));
 	CIV_DATA.population += round((CIV_DATA.happiness * sqrt(len(CIV_DATA.buildable))) / 10000);
@@ -466,17 +811,29 @@ func calculate_economy():
 	var total_economy = 0;
 	for economy_pos in ECONOMIES.keys():
 		var economy = ECONOMIES[economy_pos];
+		var economy_boost = 0;
+		var economy_stid = varify(MAP_DATA[economy_pos.x][economy_pos.y].id);
 		if economy.type == "basic":
-			total_economy += economy.count;
+			economy_boost += economy.count;
 		elif economy.type == "tile":
 			var possibles = resolve_id(economy.id);
 			for neighbour in get_valid_neighbours(economy_pos.x, economy_pos.y):
 				var neighbour_tid = MAP_DATA[neighbour.x][neighbour.y].id;
 				if possibles.has(neighbour_tid):
 					if TILES[neighbour_tid].get("tags", []).has("#heavy"):
-						total_economy += economy.count * economy.heavy_boost;
+						economy_boost += economy.count * economy.heavy_boost;
 					else:
-						total_economy += economy.count;
+						economy_boost += economy.count;
+		elif economy.type == "custom":
+			economy_boost += call(economy.function, economy_pos.x, economy_pos.y);
+		if TILES[economy_stid].has("employees"):
+			var necessary = TILES[economy_stid].employees;
+			var has = MAP_DATA[economy_pos.x][economy_pos.y].get("employees", 0);
+			total_economy += floor(economy_boost * (has / necessary));
+			MAP_DATA[economy_pos.x][economy_pos.y].economy = floor(economy_boost * (has / necessary));
+		else:
+			total_economy += economy_boost;
+			MAP_DATA[economy_pos.x][economy_pos.y].economy = economy_boost;
 	CIV_DATA.economy = total_economy;
 	CIV_DATA.money += CIV_DATA.economy;
 	 
@@ -484,8 +841,9 @@ func calculate_economy():
 func calculate_victory():
 	var victory_total = CIV_DATA.victory_bonus;
 	victory_total += CIV_DATA.economy / 1000;
+	victory_total += ((CIV_DATA.advancement / 10) * pow(CIV_DATA.economy / 100, 2)) / 100;
 	victory_total += min(CIV_DATA.population, CIV_DATA.housing);
-	victory_total += CIV_DATA.population - CIV_DATA.housing;
+	victory_total += min(CIV_DATA.housing - CIV_DATA.population, 0);
 	for victory_pos in VICTORIES:
 		var victory = VICTORIES[victory_pos];
 		if victory.type == "tile":
@@ -497,9 +855,11 @@ func calculate_victory():
 						victory_total += victory.count * victory.heavy_boost;
 					else:
 						victory_total += victory.count;
+		elif victory.type == "custom":
+			victory_total += call(victory.function, victory_pos.x, victory_pos.y);
 	CIV_DATA.victory = victory_total;
 	print("Victory: " + String(CIV_DATA.victory));
-	if CIV_DATA.victory > 1000:
+	if CIV_DATA.victory > 500:
 		print("Winner!");
 	
 
@@ -507,6 +867,8 @@ func place_tile(x: float, y: float, tid):
 	MAP_DATA[x][y].id = tid;
 	local_propagate_beauty(x, y);
 	resolve_benefits(x, y);
+	if TILES[varify(tid)].has("employees"):
+		HIRING.append(Vector2(x, y));
 	
 
 func get_valid_neighbours(x: float, y: float) -> Array:
@@ -575,6 +937,19 @@ func resolve_benefits(x: float, y: float):
 					"heavy_boost": benefit.get("heavy_boost", 1),
 					"count": benefit.get("count", 1),
 				};
+		elif benefit.type == "custom":
+			if benefit.resource == "victory":
+				VICTORIES[Vector2(x, y)] = {
+					"type": "custom",
+					"function": benefit.function,
+				};
+			elif benefit.resource != "economy":
+				CIV_DATA[benefit.resource] += call(benefit.function, x, y);
+			else:
+				ECONOMIES[Vector2(x, y)] = {
+					"type": "custom",
+					"function": benefit.function,
+				};
 	
 
 func get_points_in_radius(x: float, y: float, r: int) -> Array:
@@ -592,4 +967,24 @@ func transform_to_normal(point: Vector2) -> Vector2:
 
 func transform_to_zigzag(point: Vector2) -> Vector2:
 	return Vector2(point.x + (floor(point.y / 2)), point.y);
+	
+
+func end_turn():
+	CIV_DATA.turn += 1;
+	var unassigned_citizens = CIV_DATA.population - CIV_DATA.employed;
+	while unassigned_citizens > 0:
+		if HIRING.empty(): break;
+		var hiring = HIRING[0];
+		var tile = MAP_DATA[hiring.x][hiring.y];
+		var cur_employees = tile.get("employees", 0);
+		var necessary_employees = TILES[varify(tile.id)].get("employees", 0);
+		tile.employees = cur_employees + min(necessary_employees - cur_employees, unassigned_citizens);
+		unassigned_citizens -= tile.employees - cur_employees;
+		CIV_DATA.employed += tile.employees - cur_employees;
+		if tile.employees == necessary_employees:
+			HIRING.pop_front();
+	print("Employed: " + String(CIV_DATA.employed));
+	calculate_happiness();
+	calculate_economy();
+	calculate_victory();
 	
